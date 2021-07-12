@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Sympli";
+}
+
+@model Sympli.Models.InputRequestModel
+
+
+<div class="container-fluid">
+
+
+    @using (Html.BeginForm("Search", "Home", FormMethod.Post))
+    {
+        <div class="form-group table-responsive-sm table-primary">
+
+            <div class="form-group form-row">
+                <div class="col-12 align-content-center"> Scrape the results from the search engines of your choice </div>
+            </div>
+            <div class="form-group form-row">
+                <div class="col-6">
+                    @Html.Label("Search Text:")
+                </div>
+                <div class="col-6 align-content-end">
+                    @Html.TextBoxFor(model => model.SearchQuery)
+                    @Html.ValidationMessageFor(model => model.SearchQuery)
+                </div>
+
+            </div>
+
+            <div class="form-group form-row">
+                <div class="col-6 align-content-end">
+                    @Html.Label("Url to search for:")
+                </div>
+                <div class="col-6">
+                    @Html.TextBoxFor(model => model.UrlText)
+                    @Html.ValidationMessageFor(model => model.UrlText)
+                </div>
+
+
+            </div>
+            
+        </div>
+        <div class="form-group">
+            <div class="col-12"> <button type="submit" class="btn btn-primary">Search</button></div>
+        </div>
+
+    }
+
+
+    </div>
+   
