@@ -18,6 +18,7 @@ namespace Sympli.Services
         private readonly ISearchResultsProxy _searchResultsProxy;
         private readonly IConfiguration _config;
         private readonly IMemoryCache _memoryCache;
+        private const int resultSize = 100;
         public SearchResultsService(ISearchResultsProxy searchResultsProxy, IConfiguration config, IMemoryCache memoryCache)
         {
             _searchResultsProxy = searchResultsProxy;
@@ -34,12 +35,12 @@ namespace Sympli.Services
             foreach (var engine in searchEngines)
             {
                 SearchResultsModel _cacheEntry;
-                var _cacheKey = $"{engine}&q={request.SearchQuery}";
+                var _cacheKey = $"{engine}search?num={resultSize}&q={request.SearchQuery}";
                 var searchResult = new SearchResultsModel();
                 
                 if (!_memoryCache.TryGetValue(_cacheKey, out _cacheEntry))
                 {
-                    var result = await _searchResultsProxy.GetScrapeResultsAsync($"{engine}&q={request.SearchQuery}");
+                    var result = await _searchResultsProxy.GetScrapeResultsAsync($"{engine}search?num={resultSize}&q={request.SearchQuery}");
                     var count = result.Where(x => x.ToString().Contains(request.UrlText)).ToList().Count;
 
                     searchResult.SearchEngine = engine;
