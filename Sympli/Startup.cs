@@ -40,6 +40,7 @@ namespace Sympli
             services.AddHttpClient<IHttpRequestHandler, HttpRequestHandler>();
             services.AddScoped(typeof(ISearchResultsProxy), typeof(SearchResultsProxy));
             services.AddScoped(typeof(ISearchResultsService), typeof(SearchResultsService));
+            services.AddScoped(typeof(ICacheService), typeof(CacheService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

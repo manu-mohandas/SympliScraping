@@ -17,13 +17,13 @@ namespace Sympli.Services
     {
         private readonly ISearchResultsProxy _searchResultsProxy;
         private readonly IConfiguration _config;
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
         private const int resultSize = 100;
-        public SearchResultsService(ISearchResultsProxy searchResultsProxy, IConfiguration config, IMemoryCache memoryCache)
+        public SearchResultsService(ISearchResultsProxy searchResultsProxy, IConfiguration config, ICacheService cacheService)
         {
             _searchResultsProxy = searchResultsProxy;
             _config = config;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
         }
 
         public  async Task<List<SearchResultsModel>> GetScrapeResultsAsync(InputRequestModel request)
@@ -33,27 +33,21 @@ namespace Sympli.Services
            
                         
             foreach (var engine in searchEngines)
-            {
-                SearchResultsModel _cacheEntry;
+            {                
                 var _cacheKey = $"{engine}search?num={resultSize}&q={request.SearchQuery}";
-                var searchResult = new SearchResultsModel();
-                
-                if (!_memoryCache.TryGetValue(_cacheKey, out _cacheEntry))
+                var _cacheEntry = _cacheService.GetCachedData<SearchResultsModel>(_cacheKey);
+
+                if (_cacheEntry == default(SearchResultsModel))
                 {
                     var result = await _searchResultsProxy.GetScrapeResultsAsync($"{engine}search?num={resultSize}&q={request.SearchQuery}");
                     var count = result.Where(x => x.ToString().Contains(request.UrlText)).ToList().Count;
 
-                    searchResult.SearchEngine = engine;
-                    searchResult.Appearences = count;
+                    _cacheEntry = new SearchResultsModel();
+                    _cacheEntry.SearchEngine = engine;
+                    _cacheEntry.Appearences = count;
 
-                    _cacheEntry = searchResult;
-                    // Set cache options.
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        // Keep in cache for this time, reset time if accessed.
-                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(60));
-                    // Save data in cache.
-                    _memoryCache.Set(_cacheKey, _cacheEntry, cacheEntryOptions);
-                }
+                    _cacheService.SetCacheData(_cacheKey, _cacheEntry);
+                }                               
                     
                 searchResults.Add(_cacheEntry);                                                             
             }   

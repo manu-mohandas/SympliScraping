@@ -22,7 +22,7 @@ namespace UnitTests.ServicesTests
         private ISearchResultsProxy _searchResultsProxy;
         private ISearchResultsService _searchResultsServices;
         private IConfiguration _config;
-        private IMemoryCache _cache;
+        private ICacheService _cache;
 
         [SetUp]
         public void SetUp()
@@ -30,7 +30,7 @@ namespace UnitTests.ServicesTests
             _httpRequestHandler = Substitute.For<IHttpRequestHandler>();
             _searchResultsProxy = new SearchResultsProxy(_httpRequestHandler);
             _config = Substitute.For<IConfiguration>();
-            _cache = Substitute.For<IMemoryCache>();
+            _cache = Substitute.For<ICacheService>();
             _searchResultsServices = new SearchResultsService(_searchResultsProxy, _config, _cache);
         }
 

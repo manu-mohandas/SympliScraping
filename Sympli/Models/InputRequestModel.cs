@@ -8,7 +8,7 @@ namespace Sympli.Models
 {
     public class InputRequestModel
     {
-        public string SearchQuery { get; set; }
+        public string SearchQuery { get; set; } 
         public string UrlText { get; set; }
     }
 
